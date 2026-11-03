@@ -80,7 +80,7 @@ check tcsh 'tcsh --version' 'tcsh --version'
 {
   printf 'FSL                %s\n' "$(first_line fsl_version)"
   printf 'fslpy / fsleyes    %s\n' "$(printf '%s' "${OUTPUT[fsl_python]:-}" | tr '\n' ';' | sed 's/;$//')"
-  printf 'FSLeyes CLI        %s\n' "$(first_line fsleyes_cli)"
+  printf 'FSLeyes CLI        %s\n' "$(printf '%s\n' "${OUTPUT[fsleyes_cli]:-}" | grep -m1 -i 'fsleyes version' || first_line fsleyes_cli)"
   printf 'AFNI               %s\n' "$(first_line afni_ver)"
   printf 'ANTs               %s\n' "$(printf '%s\n' "${OUTPUT[ants_reg]:-}" | grep -i -m1 -E 'ants version|^[0-9]' || first_line ants_reg)"
   printf 'FreeSurfer         %s\n' "$(cat "$FREESURFER_HOME/build-stamp.txt" 2>/dev/null || first_line fs_mri_convert)"
