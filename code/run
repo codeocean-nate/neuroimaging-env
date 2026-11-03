@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Entry point: verify the neuroimaging toolchain built into this capsule's image.
+set -euo pipefail
+
+bash /code/check_tools.sh
