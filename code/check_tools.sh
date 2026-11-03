@@ -71,7 +71,7 @@ check fs_mri_info 'mri_info on FSL MNI152 template' 'mri_info "$TEMPLATE"'
 check fs_recon_all 'recon-all --version' 'recon-all --version'
 
 # --- dcm2niix --------------------------------------------------------------
-check dcm2niix 'dcm2niix -v' 'dcm2niix -v'
+check dcm2niix 'dcm2niix -v (exits 3 with no input dir; PASS requires the pinned version string)' 'o="$(dcm2niix -v 2>&1 || true)"; printf "%s\n" "$o"; printf "%s" "$o" | grep -q "v1\.0\.20261029"'
 
 # --- tcsh ------------------------------------------------------------------
 check tcsh 'tcsh --version' 'tcsh --version'
