@@ -55,7 +55,7 @@ first_line() {
 check fsl_version 'FSL version ($FSLDIR/etc/fslversion)' 'cat "$FSLDIR/etc/fslversion"'
 check fsl_bet 'FSL bet on MNI152_T1_2mm -> /results' 'bet "$TEMPLATE" "$RESULTS/MNI152_T1_2mm_brain" -f 0.5 -g 0 -m && ls -l "$RESULTS"/MNI152_T1_2mm_brain*'
 check fsl_python 'fslpy + fsleyes import via $FSLDIR/bin/python' '"$FSLDIR/bin/python" -c "from importlib.metadata import version as v; import fsl, fsleyes; print(\"fslpy\", v(\"fslpy\")); print(\"fsleyes\", v(\"fsleyes\"))"'
-check fsleyes_cli 'fsleyes --version' 'fsleyes --version 2>/dev/null || xvfb-run -a fsleyes --version'
+check fsleyes_cli 'fsleyes --version (wrapper exit code unreliable at shutdown; PASS requires the version string)' 'o="$(fsleyes --version 2>/dev/null || xvfb-run -a fsleyes --version 2>/dev/null || true)"; printf "%s\n" "$o"; printf "%s" "$o" | grep -q -i "FSLeyes version"'
 
 # --- AFNI ------------------------------------------------------------------
 check afni_ver 'afni -ver' 'afni -ver'
