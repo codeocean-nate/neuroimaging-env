@@ -105,3 +105,17 @@ RUN set -eu; \
     install -m 0755 "$(find /tmp/dcm/x -type f -name dcm2niix | head -n 1)" /usr/local/bin/dcm2niix; \
     rm -rf /tmp/dcm; \
     test -x /usr/local/bin/dcm2niix
+
+# 6. Same tool settings for shells the virtual desktop opens. Docker ENV reaches only processes the
+#    container starts; the desktop session starts its own shells without it, so a desktop terminal
+#    could not find fsleyes, afni or freeview. Values are copied from the ENV above at build time.
+RUN set -eu; \
+    f=/etc/profile.d/neuroimaging.sh; \
+    echo '# Neuroimaging tool settings (copied from the image ENV) for desktop-session shells.' > "$f"; \
+    for v in FSLDIR FSLOUTPUTTYPE ANTSPATH FREESURFER_HOME SUBJECTS_DIR FUNCTIONALS_DIR FSFAST_HOME MNI_DIR MINC_BIN_DIR MINC_LIB_DIR FS_LICENSE; do \
+        printf 'export %s="%s"\n' "$v" "$(printenv "$v")" >> "$f"; \
+    done; \
+    echo 'for d in /usr/local/freesurfer/8.2.0/mni/bin /usr/local/freesurfer/8.2.0/tktools /usr/local/freesurfer/8.2.0/fsfast/bin /usr/local/freesurfer/8.2.0/bin /opt/ants/bin /opt/afni /opt/fsl/share/fsl/bin; do case ":$PATH:" in *":$d:"*) ;; *) PATH="$d:$PATH" ;; esac; done; export PATH' >> "$f"; \
+    echo '[ -r /etc/profile.d/neuroimaging.sh ] && . /etc/profile.d/neuroimaging.sh' >> /etc/bash.bashrc; \
+    cat "$f"; \
+    env -i HOME=/root PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -c '. /etc/profile.d/neuroimaging.sh && command -v fsleyes afni freeview antsRegistration dcm2niix'

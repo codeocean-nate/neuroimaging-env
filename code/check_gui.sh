@@ -62,6 +62,11 @@ grab_screen() {
   fi
 }
 
+# --- 0. Desktop-session shells find the tools ------------------------------
+# A terminal opened on the virtual desktop starts without the image ENV; it must still find the tools.
+check 'Interactive bash with a clean environment (like a desktop terminal) finds the tools' \
+  'env -i HOME=/root TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -ic "command -v fsleyes afni freeview antsRegistration dcm2niix && echo FSLDIR=\$FSLDIR FREESURFER_HOME=\$FREESURFER_HOME" 2>/dev/null'
+
 # --- virtual display --------------------------------------------------------
 Xvfb :99 -screen 0 1920x1080x24 +extension GLX +render -noreset >"$OUT/xvfb.log" 2>&1 &
 XVFB_PID=$!
