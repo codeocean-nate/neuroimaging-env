@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 # Entry point: verify the neuroimaging toolchain built into this capsule's image.
-set -euo pipefail
+# 1) command-line checks (check_tools.sh), 2) GUI checks on a virtual display (check_gui.sh).
+set -uo pipefail
 
-bash /code/check_tools.sh
+status=0
+bash /code/check_tools.sh || status=1
+bash /code/check_gui.sh || status=1
+exit $status
